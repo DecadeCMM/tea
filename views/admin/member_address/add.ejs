@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../../layout/admin/header  %>
+	<title>地址新增</title>
+</head>
+<body class="gray-bg">
+	<div class="container wrapper wrapper-content animated fadeInRight">
+		<!-- bs3-panel:danger 生成一个面板 红色头部的 -->
+		<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">地址新增</h3>
+				</div>
+				<div class="panel-body">
+					<!-- bs3-form 生成一个表单 -->
+					<% if(isEditor){ %>
+					<form id="mainForm" method="POST" action="/admin/member_address/editor/<%= model.id %>" role="form">
+					<%} else{%>
+					<form id="mainForm" method="POST" role="form">
+					<%} %>
+						<div class="form-group">
+							<label>地址</label>
+							<select name="Province" class="form-control"></select>
+							<select name="City" class="form-control"></select>
+							<select name="Area" class="form-control"></select>
+						</div>
+						<div class="form-group">
+							<label>详细信息</label>
+							<input type="text" name="address_detail" value="<%= model.address_detail %>" class="form-control">
+						</div>
+						<div class="form-group">
+							<label>是否默认</label>
+							<input type="radio" name="is_default" value="0" checked>否
+							<input type="radio" name="is_default" value="1">是
+						</div>
+						<button type="submit" id="btnSubmit" class="btn btn-block btn-primary">保存</button>
+					</form>
+				</div>
+		</div>
+	</div>
+	<% include ../../layout/admin/footer  %>
+	<script src="/lib/PCASClass.js"></script>
+	<script>
+		$(function(){
+			$('input[name="is_default"][value="<%= model.is_default %>"]').prop('checked',true);
+			new PCAS("Province","City","Area","<%= p %>","<%= c %>","<%= a %>");
+			$('#mainForm').validate({
+				// debug:true,
+				// ignore: '.ignore,[type="file"]',
+				rules: {
+					Province: {
+						required: true,
+					},
+					City: {
+						required: true,
+					},
+					Area: {
+						required: true,
+					},
+					address_detail: {
+						required: true,
+						minlength: 3
+					},
+				},
+				messages: {
+					Province: {
+						required: '省份信息不能为空!'
+					},
+					City: {
+						required: '城市信息不能为空!'
+					},
+					Area: {
+						required: '地区信息不能为空!'
+					},
+				}
+			})
+		})
+	</script>
+</body>
+</html>

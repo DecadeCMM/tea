@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../../layout/admin/header  %>
+	<title>会员新增</title>
+</head>
+<body class="gray-bg">
+	<div class="container wrapper wrapper-content animated fadeInRight">
+		<!-- bs3-panel:danger 生成一个面板 红色头部的 -->
+		<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">会员新增</h3>
+				</div>
+				<div class="panel-body">
+					<!-- bs3-form 生成一个表单 -->
+					<% if(isEditor){ %>
+					<form id="mainForm" method="POST" action="/admin/member/editor/<%= model.id %>" role="form">
+					<%} else{%>
+					<form id="mainForm" method="POST" role="form">
+					<%} %>
+						<div class="form-group">
+							<label>用户名</label>
+							<% if(!isEditor){ %>
+							<input name="user_name" value="<%= model.user_name %>" type="text" class="form-control" placeholder="请输入用户名">
+							<% } else { %>
+								<span><%= model.user_name %></span>
+							<% } %>
+						</div>
+						<div class="form-group">
+							<label>邮箱</label>
+							<% if(!isEditor){ %>
+							<input name="email" value="<%= model.email %>" type="text" class="form-control" placeholder="请输入邮箱">
+							<% } else { %>
+								<span><%= model.email %></span>
+							<% } %>
+						</div>
+						<div class="form-group">
+							<label>手机号</label>
+							<% if(!isEditor){ %>
+							<input name="mobile" value="<%= model.mobile %>" type="text" class="form-control" placeholder="请输入手机号">
+							<% } else { %>
+								<span><%= model.mobile %></span>
+							<% } %>
+						</div>
+						<% if(!isEditor){ %>
+						<div class="form-group">
+							<label>密码</label>
+							<input name="user_pwd" value="<%= model.user_pwd %>" type="password" class="form-control" placeholder="请输入密码">
+						</div>
+						<% } %>
+						<div class="form-group">
+							<label>昵称</label>
+							<input name="nick_name" value="<%= model.nick_name %>" type="text" class="form-control" placeholder="请输入昵称">
+						</div>
+						<button type="submit" id="btnSubmit" class="btn btn-block btn-primary">保存</button>
+					</form>
+				</div>
+		</div>
+	</div>
+	<% include ../../layout/admin/footer  %>
+	<script src="/kindeditor/kindeditor-all-min.js"></script>
+	<script>
+		KindEditor.ready(function(K) {
+			var editor1 = K.create('textarea[name="content"]',{
+                uploadJson:'/common/kindeditor/uploadImg' //处理文件上传的服务器地址
+						});
+			var uploadbutton = K.uploadbutton({
+				button : K('#uploadButton')[0],
+				fieldName : 'imgFile',
+				url : '/common/kindeditor/uploadImg',
+				afterUpload : function(data) {
+					if (data.error === 0) {
+						var url = data.url;
+						K('#img').val(url);
+						K('#imgCtrl').attr('src',url);
+					} else {
+						alert(data.message);
+					}
+				},
+				afterError : function(str) {
+					alert('自定义错误信息: ' + str);
+				}
+			});
+			uploadbutton.fileBox.change(function(e) {
+				uploadbutton.submit();
+			});
+			// 修改单独上传文件插件的样式
+			var upBtn = $('.ke-button').attr('class','');
+			upBtn.addClass('btn btn-danger btn-sm ignore');
+			$('.ke-button-common').height('auto');
+			$('.ke-form').width('50px');
+		});
+		$(function(){
+			$('#mainForm').validate({
+				// debug:true,
+				ignore: '.ignore,[type="file"]',
+				rules: {
+					user_name: {
+						required: true,
+						minlength: 3,
+						remote: '/api/v1/validate/member_user_name'
+					},
+					email: {
+						required: true,
+						email: true,
+						remote: '/api/v1/validate/member_email'
+					},
+					mobile: {
+						required: true,
+						isMobile: true,
+						remote: '/api/v1/validate/member_mobile'
+					},
+					user_pwd: {
+						required: true,
+						minlength: 6
+					},
+					name: {
+						required: true,
+						minlength: 2,
+					},
+					nick_name: {
+						required: true,
+						minlength: 2
+					},
+				},
+				messages: {
+					user_name: {
+						remote: '用户名已经存在!'
+					},
+					mobile: {
+						remote: '手机号已经存在!'
+					},
+					email: {
+						remote: '邮箱已经存在!'
+					}
+				}
+			})
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include ../../layout/admin/header  %>
+	<title>用户地址-信息</title>
+</head>
+<body class="gray-bg">
+	<div class="container wrapper wrapper-content animated fadeInRight">
+		<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">用户地址-信息</h3>
+				</div>
+				<div class="panel-body">
+					<a class="btn btn-danger" href="/admin/member_address/add/<%= m_id %>">新增</a>
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>地址</th>
+								<th>详细信息</th>
+								<th>是否默认</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% list.forEach(function(item,index){%>
+								<tr>
+									<td><%= index+1 %></td>
+									<td><%= item.address %></td>
+									<td><%= item.address_detail %></td>
+									<td><%= item.is_default==1?"是":"否" %></td>
+									<td>
+										<a href="/admin/member_address/editor?id=<%= item.id %>"><i class="btn btn-primary btn-sm fa fa-edit"></i></a>
+										<a onclick="delOne('<%= item.id %>')"><i class="btn btn-danger btn-sm fa fa-remove"></i></a>
+									</td>
+								</tr>
+							<%}) %>
+						</tbody>
+					</table>
+				</div>
+		</div>
+	</div>
+	<% include ../../layout/admin/footer  %>
+	<form method="post" id="delForm" style="display:none;" action="/admin/member_address/delete">
+		<input type="text" name="id" id="delID">
+	</form>
+	<script>
+		function delOne(id){
+			confirm('是否删除选中的信息?',function(){
+				$('#delID').val(id);
+				$('#delForm').submit();
+			})
+		}
+	</script>
+</body>
+</html>
